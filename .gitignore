@@ -1,0 +1,9 @@
+.idea/
+cs285.egg-info/
+__pycache__/
+data/
+hw1/cs285/data
+hw2/cs285/data
+hw3/cs285/data
+hw4/cs285/data
+hw5/cs285/data
