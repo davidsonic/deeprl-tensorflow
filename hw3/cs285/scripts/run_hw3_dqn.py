@@ -97,6 +97,7 @@ def main():
 
     trainer = Q_Trainer(params)
     trainer.run_training_loop()
+    print(colored('logdir: {}'.format(logdir), 'red'))
 
 
 if __name__ == "__main__":

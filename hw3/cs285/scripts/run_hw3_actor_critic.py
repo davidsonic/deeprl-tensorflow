@@ -7,6 +7,9 @@ import tensorflow as tf
 
 from cs285.infrastructure.rl_trainer import RL_Trainer
 from cs285.agents.ac_agent import ACAgent
+from termcolor import colored
+import warnings
+warnings.filterwarnings('ignore')
 
 class AC_Trainer(object):
 
@@ -94,6 +97,8 @@ def main():
 
     # convert to dictionary
     params = vars(args)
+    for k,v in params.items():
+        print(colored('{}: {}'.format(k,v), 'red'))
 
     # for policy gradient, we made a design decision
     # to force batch_size = train_batch_size
@@ -125,6 +130,7 @@ def main():
 
     trainer = AC_Trainer(params)
     trainer.run_training_loop()
+    print(colored('logdir: {}'.format(logdir), 'red'))
 
 
 if __name__ == "__main__":

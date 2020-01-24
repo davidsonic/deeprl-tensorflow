@@ -129,6 +129,7 @@ class RL_Trainer(object):
                 self.logmetrics = False
 
             # collect trajectories, to be used for training
+            # the DQNAgent samples trajectory differently
             if isinstance(self.agent, DQNAgent):
                 # only perform an env step and add to replay buffer for DQN
                 self.agent.step_env()
@@ -176,7 +177,7 @@ class RL_Trainer(object):
                 loaded_paths = pickle.load(file)
             return loaded_paths, 0, None
         print('\nCollecting data to be used for training...')
-        paths, envsteps_this_batch = sample_trajectories(self.env, collect_policy, batch_size*self.params['ep_len'], self.params['ep_len'])
+        paths, envsteps_this_batch = sample_trajectories(self.env, collect_policy, batch_size, self.params['ep_len'])
         print('Collecting training data done!')
 
         train_video_paths = None
@@ -187,7 +188,7 @@ class RL_Trainer(object):
 
     def train_agent(self):
         # TODO: GETTHIS from HW1
-        print('\nTraining agent using sampled data from replay buffer...')
+        # print('\nTraining agent using sampled data from replay buffer...')
         for train_step in range(self.params['num_agent_train_steps_per_iter']):
             ob_batch, ac_batch, re_batch, next_ob_batch, terminal_batch = self.agent.sample(self.params['train_batch_size'])
             self.agent.train(ob_batch, ac_batch, re_batch, next_ob_batch, terminal_batch)

@@ -121,29 +121,29 @@ class MLPPolicy(BasePolicy):
 #####################################################
 #####################################################
 # Not used in HW2
-class MLPPolicySL(MLPPolicy):
-
-    # TODO: GETTHIS from HW1 (or comment it out, since you don't need it for this homework)
-    def define_placeholders(self):
-        self.observations_pl = tf.placeholder(shape=[None, self.ob_dim], name='ob', dtype='tf.float32')
-
-        self.actions_pl = tf.placeholder(shape=[None, self.ac_dim], name='ac', dtype=tf.float32)
-
-        if self.training:
-            self.acs_labels_na = tf.placeholder(shape=[None, self.ac_dim], name='labels', dtype=tf.float32)
-
-
-    def define_train_op(self):
-        true_actions = self.acs_labels_na
-        predicted_actions = self.sample_ac
-
-        self.loss = tf.losses.mean_squared_error(true_actions, predicted_actions)
-        self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
-
-
-    def update(self, observations, actions):
-        assert(self.training, 'Policy must be created with training=True')
-        self.sess.run(self.train_op, feed_dict={self.observations_pl:observations, self.acs_labels_na:actions})
+# class MLPPolicySL(MLPPolicy):
+#
+#     # TODO: GETTHIS from HW1 (or comment it out, since you don't need it for this homework)
+#     def define_placeholders(self):
+#         self.observations_pl = tf.placeholder(shape=[None, self.ob_dim], name='ob', dtype='tf.float32')
+#
+#         self.actions_pl = tf.placeholder(shape=[None, self.ac_dim], name='ac', dtype=tf.float32)
+#
+#         if self.training:
+#             self.acs_labels_na = tf.placeholder(shape=[None, self.ac_dim], name='labels', dtype=tf.float32)
+#
+#
+#     def define_train_op(self):
+#         true_actions = self.acs_labels_na
+#         predicted_actions = self.sample_ac
+#
+#         self.loss = tf.losses.mean_squared_error(true_actions, predicted_actions)
+#         self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+#
+#
+#     def update(self, observations, actions):
+#         assert(self.training, 'Policy must be created with training=True')
+#         self.sess.run(self.train_op, feed_dict={self.observations_pl:observations, self.acs_labels_na:actions})
 
 
 #####################################################
@@ -212,7 +212,7 @@ class MLPPolicyPG(MLPPolicy):
         return self.sess.run(self.baseline_prediction, feed_dict={self.observations_pl: obs})
 
     def update(self, observations, acs_na, adv_n=None, acs_labels_na=None, qvals=None):
-        assert(self.training, 'Policy must be created with training=True in order to perform training updates...')
+        assert(self.training==True, 'Policy must be created with training=True in order to perform training updates...')
 
         _, loss = self.sess.run([self.train_op, self.loss], feed_dict={self.observations_pl: observations, self.actions_pl: acs_na, self.adv_n: adv_n})
 
