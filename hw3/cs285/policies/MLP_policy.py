@@ -187,6 +187,7 @@ class MLPPolicyPG(MLPPolicy):
         # HINT3: this will be very similar to how you implemented get_action (above)
         return self.sess.run(self.baseline_prediction, feed_dict={self.observations_pl: obs})
 
+
     def update(self, observations, acs_na, adv_n=None, acs_labels_na=None, qvals=None):
         assert (self.training, 'Policy must be created with training=True in order to perform training updates...')
 

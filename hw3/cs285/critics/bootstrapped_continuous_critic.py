@@ -117,7 +117,7 @@ class BootstrappedContinuousCritic(BaseCritic):
                     #a) sy_ob_no with ob_no
                     #b) sy_target_n with target values calculated above
         
-        for iter in range(len(self.num_grad_steps_per_target_update * self.num_target_updates)):
+        for iter in range(self.num_grad_steps_per_target_update * self.num_target_updates):
             if iter % self.num_grad_steps_per_target_update == 0:
                 V_s1 = self.forward(next_ob_no)
                 target_values = re_n + self.gamma * V_s1 * (1 - terminal_n)

@@ -58,14 +58,15 @@ class ACAgent(BaseAgent):
             # for agent_params['num_actor_updates_per_agent_update'] steps,
             #     update the actor
         
-        for iter in range(len(self.agent_params['num_critic_updates_per_agent_update'])):
+        for iter in range(self.agent_params['num_critic_updates_per_agent_update']):
             critic_loss = self.critic.update(ob_no, next_ob_no, re_n, terminal_n)
 
         advantage = self.estimate_advantage(ob_no, next_ob_no, re_n, terminal_n)
 
-        for iter in range(len(self.agent_params['num_actor_updates_per_agent_update'])):
+        for iter in range(self.agent_params['num_actor_updates_per_agent_update']):
             actor_loss = self.actor.update(ob_no, ac_na, advantage)
 
+        print('critic_loss: {}, actor_loss: {}'.format(critic_loss, actor_loss))
         loss = OrderedDict()
         loss['Critic_Loss'] = critic_loss  # put final critic loss here
         loss['Actor_Loss'] = actor_loss  # put final actor loss here
