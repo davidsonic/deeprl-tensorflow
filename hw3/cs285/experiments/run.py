@@ -35,17 +35,29 @@ def run_ddqn_lander():
     os.system(cmd)
 
 
-def run_actor_critic():
-    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name CartPole-v0 -n 100 -b 1000 --exp_name 100_1 -ntu 100 -ngsptu 1'
+def run_ac_easy():
+    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name CartPole-v0 -n 100 -b 1000 --exp_name 100_1 -ntu 10 -ngsptu 10 --video_log_freq 100'
     os.system(cmd)
 
+
+
+def run_ac_hard():
+    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name InvertedPendulum-v2 --ep_len 1000 --discount 0.95 -n 100 -l 2 -s 64 -b 5000 -lr 0.01 --exp_name IP_5000 -ntu 10 -ngsptu 10 --video_log_freq 10'
+    os.system(cmd)
+
+
+def run_ac_harder():
+    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name HalfCheetah-v2 --ep_len 150 --discount 0.90 --scalar_log_freq 1 -n 150 -l 2 -s 32 -b 30000 -eb 1500 -lr 0.02 --exp_name cheetah_30000 -ntu 10 -ngsptu 10 --video_log_freq 10'
+    os.system(cmd)
 
 exp = {
     'run-dqn-pong': run_dqn_pong,
     'run-dqn-lander': run_dqn_lander,
     'run-ddqn-pong': run_ddqn_pong,
     'run-ddqn-lander': run_ddqn_lander,
-    'run-actor-critic':run_actor_critic,
+    'run-ac-easy':run_ac_easy,
+    'run-ac-hard': run_ac_hard,
+    'run-ac-harder': run_ac_harder,
 }
 
 assert args.exp in exp

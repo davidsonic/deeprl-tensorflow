@@ -66,7 +66,7 @@ class ACAgent(BaseAgent):
         for iter in range(self.agent_params['num_actor_updates_per_agent_update']):
             actor_loss = self.actor.update(ob_no, ac_na, advantage)
 
-        print('critic_loss: {}, actor_loss: {}'.format(critic_loss, actor_loss))
+        # print('critic_loss: {}, actor_loss: {}'.format(critic_loss, actor_loss))
         loss = OrderedDict()
         loss['Critic_Loss'] = critic_loss  # put final critic loss here
         loss['Actor_Loss'] = actor_loss  # put final actor loss here
