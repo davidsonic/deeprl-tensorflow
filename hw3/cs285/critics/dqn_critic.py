@@ -2,6 +2,8 @@ from .base_critic import BaseCritic
 import tensorflow as tf
 from cs285.infrastructure.dqn_utils import minimize_and_clip, huber_loss
 
+import ipdb
+
 class DQNCritic(BaseCritic):
 
     def __init__(self, sess, hparams, optimizer_spec, **kwargs):
@@ -24,13 +26,14 @@ class DQNCritic(BaseCritic):
         self.define_placeholders()
         self._build(hparams['q_func'])
 
-    def _build(self, q_func):
+    def _build(self, q_func):  #q_func: atari_model
 
         #####################
 
         # q values, created with the placeholder that holds CURRENT obs (i.e., t)
-        # Q(st, at)
-        self.q_t_values = q_func(self.obs_t_ph, self.ac_dim, scope='q_func', reuse=False)
+        # Q(st, a)
+        self.q_t_values = q_func(self.obs_t_ph, self.ac_dim, scope='q_func', reuse=False)  #None, 6
+        # [None, 6] * [None, 6] elementwise multiplication -> [None] Q(st, at)
         self.q_t = tf.reduce_sum(self.q_t_values * tf.one_hot(self.act_t_ph, self.ac_dim), axis=1)
 
         #####################
@@ -43,7 +46,9 @@ class DQNCritic(BaseCritic):
             # In double Q-learning, the best action is selected using the Q-network that
             # is being updated, but the Q-value for this action is obtained from the
             # target Q-network. See page 5 of https://arxiv.org/pdf/1509.06461.pdf for more details.
-            TODO
+            q_tmp = q_func(self.obs_tp1_ph, self.ac_dim, scope='q_func', reuse=True)
+            act_tmp = tf.argmax(q_tmp, axis=1)
+            q_tp1 = tf.reduce_sum(q_tp1_values * tf.one_hot(act_tmp, self.ac_dim), axis=1)
         else:
             # q values of the next timestep
             q_tp1 = tf.reduce_max(q_tp1_values, axis=1)
@@ -55,6 +60,7 @@ class DQNCritic(BaseCritic):
             #currentReward + self.gamma * qValuesOfNextTimestep * (1 - self.done_mask_ph)
         # HINT2: see above, where q_tp1 is defined as the q values of the next timestep
         # HINT3: see the defined placeholders and look for the one that holds current rewards
+        # y = r(st, at) + gamma * max_{a'} Q(s', a')
         target_q_t = self.rew_t_ph + self.gamma * q_tp1 * (1 - self.done_mask_ph)
         target_q_t = tf.stop_gradient(target_q_t)
 
@@ -87,7 +93,7 @@ class DQNCritic(BaseCritic):
         for var, var_target in zip(sorted(q_func_vars,        key=lambda v: v.name),
                                    sorted(target_q_func_vars, key=lambda v: v.name)):
             update_target_fn.append(var_target.assign(var))
-        self.update_target_fn = tf.group(*update_target_fn)
+        self.update_target_fn = tf.group(*update_target_fn) #grouping multiple ops
 
     def define_placeholders(self):
         # set up placeholders

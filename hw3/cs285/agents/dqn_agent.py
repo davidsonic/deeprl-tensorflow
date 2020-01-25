@@ -17,12 +17,12 @@ class DQNAgent(object):
 
         self.num_actions = agent_params['ac_dim']
         self.learning_starts = agent_params['learning_starts']
-        self.learning_freq = agent_params['learning_freq']
-        self.target_update_freq = agent_params['target_update_freq']
+        self.learning_freq = agent_params['learning_freq']  #4
+        self.target_update_freq = agent_params['target_update_freq'] #10000
 
         self.replay_buffer_idx = None
-        self.exploration = agent_params['exploration_schedule']
-        self.optimizer_spec = agent_params['optimizer_spec']
+        self.exploration = agent_params['exploration_schedule'] #PieceWise Schedule
+        self.optimizer_spec = agent_params['optimizer_spec'] #0.0001
 
         print('agent_params: {}'.format(agent_params))
         self.critic = DQNCritic(sess, agent_params, self.optimizer_spec)

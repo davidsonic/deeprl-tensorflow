@@ -15,13 +15,30 @@ parser.add_argument('exp')
 args = parser.parse_args()
 
 
-def run_dqn():
+def run_dqn_pong():
     cmd = 'python cs285/scripts/run_hw3_dqn.py --env_name PongNoFrameskip-v4 --exp_name test_pong'
     os.system(cmd)
 
 
+def run_ddqn_pong():
+    cmd = 'python cs285/scripts/run_hw3_dqn.py --env_name PongNoFrameskip-v4 --exp_name test_pong --double_q'
+    os.system(cmd)
+
+
+def run_dqn_lander():
+    cmd = 'python cs285/scripts/run_hw3_dqn.py --env_name LunarLander-v2 --exp_name test_lander --seed 1'
+    os.system(cmd)
+
+
+def run_ddqn_lander():
+    cmd = 'python cs285/scripts/run_hw3_dqn.py --env_name LunarLander-v2 --exp_name test_lander --seed 1 --double_q'
+    os.system(cmd)
+
 exp = {
-    'run-dqn': run_dqn,
+    'run-dqn-pong': run_dqn_pong,
+    'run-dqn-lander': run_dqn_lander,
+    'run-ddqn-pong': run_ddqn_pong,
+    'run-ddqn-lander': run_ddqn_lander,
 }
 
 assert args.exp in exp

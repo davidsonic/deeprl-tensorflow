@@ -294,4 +294,11 @@ class RL_Trainer(object):
                 self.logger.log_scalar(value, key, itr)
             print('Done logging...\n\n')
 
+            # dumping
+            metric_file = os.path.join(self.params['logdir'], f'metrics_{itr}.json')
+            for k,v in logs.items():
+                logs[k] = float(v)
+            with open(metric_file, 'w') as fw:
+                import json
+                json.dump(logs, fw)
             self.logger.flush()
