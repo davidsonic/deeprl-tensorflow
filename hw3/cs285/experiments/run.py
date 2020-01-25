@@ -34,11 +34,18 @@ def run_ddqn_lander():
     cmd = 'python cs285/scripts/run_hw3_dqn.py --env_name LunarLander-v2 --exp_name test_lander --seed 1 --double_q'
     os.system(cmd)
 
+
+def run_actor_critic():
+    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name CartPole-v0 -n 100 -b 1000 --exp_name 100_1 -ntu 100 -ngsptu 1'
+    os.system(cmd)
+
+
 exp = {
     'run-dqn-pong': run_dqn_pong,
     'run-dqn-lander': run_dqn_lander,
     'run-ddqn-pong': run_ddqn_pong,
     'run-ddqn-lander': run_ddqn_lander,
+    'run-actor-critic':run_actor_critic,
 }
 
 assert args.exp in exp
