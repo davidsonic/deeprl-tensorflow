@@ -19,11 +19,11 @@ def calculate_mean_prediction_error(env, action_sequence, models, data_statistic
     for ac in action_sequence:
         pred_states.append(ob)
         action = np.expand_dims(ac,0)
-        ob = # TODO(Q1) Get predicted next state using the model
+        ob = model.get_prediction(ob, action, data_statistics)# TODO(Q1) Get predicted next state using the model
     pred_states = np.squeeze(pred_states)
 
     # Calculate the mean prediction error here
-    mpe = # TODO(Q1)
+    mpe = mean_squared_error(pred_states, true_states)# TODO(Q1)
 
     return mpe, true_states, pred_states
 
@@ -58,17 +58,65 @@ def mean_squared_error(a, b):
 def sample_trajectory(env, policy, max_path_length, render=False, render_mode=('rgb_array')):
 
     # TODO: GETTHIS from HW2
+    ob = env.reset()
+
+    obs, acs, rewards, next_obs, terminals, image_obs = [], [], [], [], [], []
+    steps = 0
+    while True:
+
+        if render:
+            if 'rgb_array' in render_mode:
+                if hasattr(env, 'sim'):
+                    if 'track' in env.env.model.camera_names:
+                        image_obs.append(env.sim.render(camera_name='track', height=500, width=500)[::-1])
+                    else:
+                        image_obs.append(env.sim.render(height=500, width=500)[::-1])
+                else:
+                    image_obs.append(env.render(mode=render_mode))
+            if 'human' in render_mode:
+                env.render(mode=render_mode)
+                time.sleep(env.model.opt.timestep)
+
+        obs.append(ob)
+        ac = policy.get_action(ob)
+        ac = ac[0]
+        acs.append(ac)
+
+        ob, rew, done, _ = env.step(ac)
+
+        steps +=1
+        next_obs.append(ob)
+        rewards.append(rew)
+
+        rollout_done = 1 if done or steps==max_path_length else 0
+        terminals.append(rollout_done)
+
+        if rollout_done:
+            break
+
+    return Path(obs, image_obs, acs, rewards, next_obs, terminals)
+
 
 def sample_trajectories(env, policy, min_timesteps_per_batch, max_path_length, render=False, render_mode=('rgb_array')):
 
     # TODO: GETTHIS from HW1 or HW2
+    timesteps_this_batch = 0
+    paths = []
+    while timesteps_this_batch < min_timesteps_per_batch:
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        timesteps = get_pathlength(path)
+        timesteps_this_batch += timesteps
+        paths.append(path)
 
     return paths, timesteps_this_batch
 
 def sample_n_trajectories(env, policy, ntraj, max_path_length, render=False, render_mode=('rgb_array')):
     
     # TODO: GETTHIS from HW1 or HW2
-
+    paths = []
+    for i in range(ntraj):
+        path = sample_trajectory(env, policy, max_path_length, render, render_mode)
+        paths.append(path)
     return paths
 
 ############################################

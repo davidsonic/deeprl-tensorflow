@@ -4,7 +4,7 @@ from cs285.policies.MPC_policy import MPCPolicy
 from cs285.infrastructure.replay_buffer import ReplayBuffer
 from cs285.infrastructure.utils import *
 
-
+# Consists of a Dynamics model and a MPC policy
 class MBAgent(BaseAgent):
     def __init__(self, sess, env, agent_params):
         super(MBAgent, self).__init__()
@@ -48,12 +48,12 @@ class MBAgent(BaseAgent):
             # select which datapoints to use for this model of the ensemble
             # you might find the num_data_per_env variable defined above useful
 
-            observations = # TODO(Q1)
-            actions = # TODO(Q1)
-            next_observations = # TODO(Q1)
+            observations = ob_no[i*num_data_per_ens:(i+1)*num_data_per_ens]# TODO(Q1)
+            actions = ac_na[i*num_data_per_ens:(i+1)*num_data_per_ens]# TODO(Q1)
+            next_observations = next_ob_no[i*num_data_per_ens:(i+1)*num_data_per_ens]# TODO(Q1)
 
             # use datapoints to update one of the dyn_models
-            model =  # TODO(Q1)
+            model = self.dyn_models[i]# TODO(Q1)
             loss = model.update(observations, actions, next_observations, self.data_statistics)
             losses.append(loss)
 
@@ -78,7 +78,7 @@ class MBAgent(BaseAgent):
                                     axis=0),
                                 }
 
-        # update the actor's data_statistics too, so actor.get_action can be calculated correctly
+        # update the actor's data_statistics too, so actor.get_action can be calculated correctly, important!
         self.actor.data_statistics = self.data_statistics
 
     def sample(self, batch_size):

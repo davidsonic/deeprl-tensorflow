@@ -36,7 +36,7 @@ def run_ddqn_lander():
 
 
 def run_ac_easy():
-    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name CartPole-v0 -n 100 -b 1000 --exp_name 100_1 -ntu 10 -ngsptu 10 --video_log_freq 100'
+    cmd = 'python cs285/scripts/run_hw3_actor_critic.py --env_name CartPole-v0 -n 100 -b 1000 --exp_name 100_1 -ntu 10 -ngsptu 10 --video_log_freq 30'
     os.system(cmd)
 
 

@@ -109,6 +109,7 @@ class MLPPolicy(BasePolicy):
     def get_action(self, obs):
 
         # TODO: GETTHIS from HW1
+        return self.sess.run(self.sample_ac, feed_dict={self.observations_pl: obs})
 
 #####################################################
 #####################################################
@@ -122,6 +123,51 @@ class MLPPolicy(BasePolicy):
 
 class MLPPolicyPG(MLPPolicy):
     # TODO: GETTHIS from HW2
+    def define_placeholders(self):
+        self.observations_pl = tf.placeholder(shape=[None, self.ob_dim], name='ob', dtype=tf.float32)
+
+        if self.discrete:
+            self.actions_pl = tf.placeholder(shape=[None], name='ac', dtype=tf.int32)
+        else:
+            self.actions_pl = tf.placeholder(shape=[None, self.ac_dim], name='ac', dtype=tf.float32)
+
+        if self.training:
+            self.adv_n = tf.placeholder(shape=[None], name='adv', dtype=tf.float32)
+
+            if self.nn_baseline:
+                self.targets_n = tf.placeholder(shape=[None], name='baseline_target', dtype=tf.float32)
+
+
+    def train_train_op(self):
+        self.define_log_prob()
+
+        self.loss = tf.reduce_sum(-self.logprob_n * self.adv_n)
+
+        self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
+
+        if self.nn_baseline:
+            self.baseline_loss = tf.losses.mean_squared_error(self.targets_n, self.baseline_prediction)
+
+            self.baseline_update_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.baseline_loss)
+
+
+
+    def run_baseline_prediction(self, obs):
+        return self.sess.run(self.baseline_prediction, feed_dict={self.observations_pl:obs})
+
+
+    def update(self, observations, acs_na, adv_n=None, acs_labels_na=None, qvals=None):
+        assert (self.training, 'Policy must be created with training=True in order to perform training updates...')
+
+        _, loss = self.sess.run([self.train_op, self.loss],
+                                feed_dict={
+                                    self.observations_pl: observations,
+                                    self.actions_pl: acs_na,
+                                    self.adv_n: adv_n,
+                                })
+        if self.nn_baseline:
+            targets_n = (qvals - np.mean(qvals))/ (np.std(qvals) + 1e-8)
+            self.sess.run(self.baseline_update_op, feed_dict={self.targets_n: targets_n, self.observations_pl: observations})
 
 #####################################################
 #####################################################
