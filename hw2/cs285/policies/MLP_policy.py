@@ -186,7 +186,7 @@ class MLPPolicyPG(MLPPolicy):
             # to get [Q_t - b_t]
         # HINT4: don't forget that we need to MINIMIZE this self.loss
             # but the equation above is something that should be maximized
-        self.loss = tf.reduce_sum(-self.logprob_n * self.adv_n)
+        self.loss = tf.reduce_sum(-self.logprob_n * self.adv_n)  #computatoin graph
 
         # TODO: define what exactly the optimizer should minimize when updating the policy
         self.train_op = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)

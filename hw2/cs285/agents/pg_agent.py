@@ -4,6 +4,7 @@ from .base_agent import BaseAgent
 from cs285.policies.MLP_policy import MLPPolicyPG
 from cs285.infrastructure.replay_buffer import ReplayBuffer
 from cs285.infrastructure.utils import *
+import ipdb
 
 class PGAgent(BaseAgent):
     def __init__(self, sess, env, agent_params):
@@ -62,10 +63,10 @@ class PGAgent(BaseAgent):
 
         # step 1: calculate q values of each (s_t, a_t) point, 
         # using rewards from that full rollout of length T: (r_0, ..., r_t, ..., r_{T-1})
-        q_values = self.calculate_q_vals(rews_list)
+        q_values = self.calculate_q_vals(rews_list)  #(1002,): sum of all steps in a batch_size of trajectories
 
         # step 2: calculate advantages that correspond to each (s_t, a_t) point
-        advantage_values = self.estimate_advantage(obs, q_values)
+        advantage_values = self.estimate_advantage(obs, q_values)   # (1002,)
 
         # step 3:
         # TODO: pass the calculated values above into the actor/policy's update, 

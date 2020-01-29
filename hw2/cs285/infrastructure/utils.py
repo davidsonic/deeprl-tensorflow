@@ -1,6 +1,6 @@
 import numpy as np
 import time
-
+import ipdb
 ############################################
 ############################################
 
@@ -97,12 +97,12 @@ def convert_listofrollouts(paths):
         and return separate arrays,
         where each array is a concatenation of that array from across the rollouts
     """
-    observations = np.concatenate([path["observation"] for path in paths])
+    observations = np.concatenate([path["observation"] for path in paths])  # path0: [9,4]; path1: [19,4] -> observations: [1002, 4]
     actions = np.concatenate([path["action"] for path in paths])
     next_observations = np.concatenate([path["next_observation"] for path in paths])
     terminals = np.concatenate([path["terminal"] for path in paths])
     concatenated_rewards = np.concatenate([path["reward"] for path in paths])
-    unconcatenated_rewards = [path["reward"] for path in paths]
+    unconcatenated_rewards = [path["reward"] for path in paths]   # list of batch_size, each element is an array of rewards of a trajectory
     return observations, actions, next_observations, terminals, concatenated_rewards, unconcatenated_rewards
 
 ############################################
